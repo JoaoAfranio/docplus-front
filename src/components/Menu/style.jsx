@@ -9,6 +9,10 @@ const Container = styled.div`
   height: 100vh;
   border-right: 2px solid #e5e5e5;
   padding: 20px;
+
+  @media (max-width: 1000px) {
+    width: 100px;
+  }
 `;
 
 const Title = styled.h1`
@@ -17,6 +21,18 @@ const Title = styled.h1`
   margin: 30px 10px;
   color: ${COLORS.GREEN};
   letter-spacing: 1px;
+
+  &.mobile {
+    display: none;
+  }
+
+  @media (max-width: 1000px) {
+    display: none;
+
+    &.mobile {
+      display: inherit;
+    }
+  }
 `;
 
 const Item = styled(NavLink)`
@@ -55,6 +71,13 @@ const Item = styled(NavLink)`
 
   img {
     width: 30px;
+  }
+
+  @media (max-width: 1000px) {
+    justify-content: center;
+    p {
+      display: none;
+    }
   }
 `;
 
