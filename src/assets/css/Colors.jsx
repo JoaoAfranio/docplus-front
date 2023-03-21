@@ -6,4 +6,5 @@ export const COLORS = {
   LIGHT_BLUE: "#ddf4ff",
   BLUE: "#86d9ff",
   MEDIUM_BLUE: "#1cb0f6",
+  DARK_BLUE: "#1caff6",
 };
