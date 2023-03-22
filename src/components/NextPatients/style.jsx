@@ -5,7 +5,11 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
-  width: 600px;
+  width: 40%;
+
+  @media (max-width: 1000px) {
+    width: 100%;
+  }
 `;
 
 const Title = styled.h1`
@@ -18,6 +22,7 @@ const Title = styled.h1`
 
 const Content = styled.div`
   display: flex;
+  flex-direction: column;
   border: 2px solid ${COLORS.GREY};
   border-radius: 10px;
 `;
@@ -26,7 +31,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-around;
   width: 100%;
-  padding: 10px 0px;
+  padding-top: 10px;
 `;
 
 const Subtitle = styled.div`
@@ -34,7 +39,7 @@ const Subtitle = styled.div`
   justify-content: center;
   width: 100%;
   border-bottom: 2px solid ${COLORS.GREY};
-  padding-bottom: 10px;
+  padding: 10px 0px;
 
   text-transform: uppercase;
   font-weight: bold;
