@@ -51,14 +51,6 @@ const Item = styled(NavLink)`
 
   border-radius: 15px;
 
-  &:visited {
-    color: initial;
-  }
-
-  &:visited {
-    color: initial;
-  }
-
   &.active {
     border: 2px solid ${COLORS.BLUE};
     color: ${COLORS.MEDIUM_BLUE};
