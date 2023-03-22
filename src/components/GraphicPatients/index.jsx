@@ -1,9 +1,10 @@
-import { Container, Content, Title, Box } from "./style";
+import { Container, Content, Title, Box, BoxGraph } from "./style";
 import { BsFillPersonFill, BsFillArrowUpCircleFill, BsGenderAmbiguous } from "react-icons/bs";
 import { IoPeopleSharp } from "react-icons/io5";
 import { FaBirthdayCake } from "react-icons/fa";
 import Info from "./Info";
 import { useState } from "react";
+import Graph from "./Graph";
 
 export default function GraphicPatients() {
   const [active, setActive] = useState("total");
@@ -11,6 +12,10 @@ export default function GraphicPatients() {
   function setElementActive(e) {
     console.log(e.target);
   }
+
+  const labels = ["January", "February", "March", "April", "May", "June", "July"];
+  const name = "Total de Pacientes";
+  const arrayData = [500, 600, 200, 350, 485, 950, 800];
 
   return (
     <Container>
@@ -24,6 +29,10 @@ export default function GraphicPatients() {
           <Info icon={<FaBirthdayCake />} isActive={active === "age" ? true : false} description={"Distribuição por"} data={"Idade"} />
           <Info icon={<BsGenderAmbiguous />} isActive={active === "gender" ? true : false} description={"Distribuição por"} data={"Gênero"} />
         </Box>
+
+        <BoxGraph>
+          <Graph labels={labels} name={name} arrayData={arrayData} />
+        </BoxGraph>
       </Content>
     </Container>
   );

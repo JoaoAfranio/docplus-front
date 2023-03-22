@@ -5,7 +5,11 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
-  width: 600px;
+  width: 60%;
+
+  @media (max-width: 1000px) {
+    width: 100%;
+  }
 `;
 
 const Title = styled.h1`
@@ -21,13 +25,20 @@ const Content = styled.div`
   border: 2px solid ${COLORS.GREY};
   border-radius: 10px;
 
+  gap: 10px;
+
   padding: 10px;
+  height: 100%;
 `;
 
 const Box = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  justify-content: space-around;
+
+  @media (max-width: 1000px) {
+    gap: 10px;
+  }
 `;
 
 const Info = styled.div`
@@ -56,4 +67,9 @@ const Info = styled.div`
   }
 `;
 
-export { Container, Content, Title, Box, Info };
+const BoxGraph = styled.div`
+  display: flex;
+  width: 100%;
+`;
+
+export { Container, Content, Title, Box, Info, BoxGraph };
