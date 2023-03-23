@@ -10,6 +10,10 @@ const Container = styled.div`
   border-right: 2px solid #e5e5e5;
   padding: 20px;
 
+  position: fixed;
+  top: 0;
+  left: 0;
+
   @media (max-width: 1000px) {
     width: 100px;
   }

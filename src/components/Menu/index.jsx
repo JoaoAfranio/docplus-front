@@ -1,7 +1,6 @@
 import { Container, Item, Title } from "./style";
 import Home from "../../assets/icons/home.png";
 import Schedule from "../../assets/icons/schedule.png";
-import Graph from "../../assets/icons/graph.png";
 import User from "../../assets/icons/user.png";
 import Patient from "../../assets/icons/patient.png";
 
@@ -20,10 +19,6 @@ export default function Menu() {
 
       <Item activeClassName="active" to="/patient">
         <img src={Patient} alt="patient" /> <p>Pacientes</p>
-      </Item>
-
-      <Item activeClassName="active" to="/information">
-        <img src={Graph} alt="information" /> <p>Informações</p>
       </Item>
 
       <Item activeClassName="active" to="/profile">
