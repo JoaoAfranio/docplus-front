@@ -7,6 +7,7 @@ export const COLORS = {
   BLUE: "#86d9ff",
   MEDIUM_BLUE: "#1cb0f6",
   DARK_BLUE: "#1caff6",
+  DARKER_BLUE: "#3c4dff",
   RED: "#cc3300",
   YELLOW: "#ffcc00",
   MEDIUM_GREEN: "#339900",
