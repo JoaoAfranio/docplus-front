@@ -1,5 +1,7 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { COLORS } from "../../assets/css/Colors";
+import ModalAppointment from "../ModalAppointment";
 import BoxSituation from "./BoxSituation";
 
 function createData(schedule, name, situation) {
@@ -16,6 +18,9 @@ const rows = [
 ];
 
 export default function Table() {
+  const [showModal, setShowModal] = useState(false);
+  const [patient, setPatient] = useState();
+
   return (
     <TableContent>
       <tbody>
@@ -26,7 +31,13 @@ export default function Table() {
         </tr>
 
         {rows.map((patient, idx) => (
-          <tr key={idx}>
+          <tr
+            onClick={() => {
+              setShowModal(true);
+              setPatient(patient);
+            }}
+            key={idx}
+          >
             <td>{patient.schedule}</td>
             <td>{patient.name}</td>
             <td>
@@ -35,6 +46,8 @@ export default function Table() {
           </tr>
         ))}
       </tbody>
+
+      <ModalAppointment show={showModal} setShow={setShowModal} isUpdate={true} patient={patient} />
     </TableContent>
   );
 }
@@ -49,6 +62,7 @@ const TableContent = styled.table`
     text-align: left;
     padding: 12px 5px;
     font-size: 14px;
+    cursor: pointer;
   }
 
   td:last-child,
