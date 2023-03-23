@@ -13,4 +13,10 @@ export default function Dashboard({ children }) {
 const Container = styled.div`
   display: flex;
   gap: 30px;
+
+  margin-left: 256px;
+
+  @media (max-width: 1000px) {
+    margin-left: 80px;
+  }
 `;
