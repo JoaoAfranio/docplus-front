@@ -1,36 +1,34 @@
 import { BsFillPersonFill } from "react-icons/bs";
 import Dashboard from "../../layouts/Dashboard";
-import { BoxInput, Container, Icon, InputSearch, Title } from "./style";
+import { BoxInput, Button, Container, Icon, InputSearch, Title } from "./style";
 import { BiSearch } from "react-icons/bi";
 import Table from "./Table";
 import { useEffect, useState } from "react";
+import ModalComponent from "../../components/Modal";
+import ModalPatient from "../../components/ModalPatient";
+import { useQuery } from "react-query";
+import patientApi from "../../services/patientApi";
 
 export default function Patient() {
+  const { data, isLoading, isError } = useQuery("list-patients", patientApi.getPatients);
   const [input, setInput] = useState("");
   const [filterPatients, setFilterPatients] = useState([]);
-
-  function createData(id, name, cpf, cellphone) {
-    return { id, name, cpf, cellphone };
-  }
-
-  const rows = [
-    createData("1", "Kaley S. Brandt", "123.000.000-00", "(11)40015154"),
-    createData("2", "Denise R. Guffey", "000.000.000-00", "(11)40015154"),
-    createData("3", "Denise R. Guffey", "000.000.000-00", "(11)40015154"),
-    createData("4", "Denise R. Guffey", "567.000.000-00", "(11)40015154"),
-    createData("5", "Denise R. Guffey", "000.000.000-00", "(11)40015154"),
-    createData("6", "Denise R. Guffey", "000.000.000-00", "(11)40015154"),
-  ];
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    setFilterPatients(rows);
-  }, []);
+    setFilterPatients(data);
+  }, [data]);
 
   function handleInput(e) {
     const value = e.target.value;
+    if (value === "") {
+      setFilterPatients(data);
+      return;
+    }
+
     setInput(value);
-    const filter = rows.filter((p) => {
-      return p.name.toLowerCase().includes(value) || p.cellphone.includes(value) || p.cpf.includes(value);
+    const filter = filterPatients.filter((p) => {
+      return p.name.toLowerCase().includes(value) || p.phone.includes(value) || p.cpf.includes(value);
     });
 
     setFilterPatients(filter);
@@ -40,11 +38,23 @@ export default function Patient() {
     <Dashboard>
       <Container>
         <Title>
-          <BsFillPersonFill /> Pacientes
+          <div>
+            <BsFillPersonFill /> Pacientes
+          </div>
+
+          <Button
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
+            + Novo Paciente
+          </Button>
         </Title>
 
         <BoxInput>
           <InputSearch
+            minLength={2}
+            debounceTimeout={300}
             placeholder="Busque pelo nome, celular, telefone ou CPF"
             value={input}
             onChange={(e) => {
@@ -58,6 +68,8 @@ export default function Patient() {
 
         <Table patients={filterPatients} />
       </Container>
+
+      <ModalPatient show={showModal} setShow={setShowModal} />
     </Dashboard>
   );
 }

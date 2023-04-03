@@ -1,7 +1,12 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { COLORS } from "../../assets/css/Colors";
+import ModalPatient from "../../components/ModalPatient";
 
 export default function Table({ patients }) {
+  const [showModal, setShowModal] = useState(false);
+  const [patient, setPatient] = useState();
+
   return (
     <TableContent>
       <tbody>
@@ -12,15 +17,23 @@ export default function Table({ patients }) {
           <th>Celular</th>
         </tr>
 
-        {patients.map((patient) => (
-          <tr key={patient.id}>
+        {patients?.map((patient) => (
+          <tr
+            onClick={() => {
+              setPatient(patient);
+              setShowModal(true);
+            }}
+            key={patient.id}
+          >
             <td>{patient.id}</td>
             <td>{patient.name}</td>
             <td>{patient.cpf}</td>
-            <td>{patient.cellphone}</td>
+            <td>{patient.phone}</td>
           </tr>
         ))}
       </tbody>
+
+      <ModalPatient show={showModal} setShow={setShowModal} isUpdate={true} patient={patient} />
     </TableContent>
   );
 }
