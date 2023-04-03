@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-export default function Graph({ name, labels, arrayData }) {
+export default function GraphLine({ name, labels, arrayData }) {
   const options = {
     responsive: true,
     plugins: {
@@ -31,10 +31,6 @@ export default function Graph({ name, labels, arrayData }) {
       },
     ],
   };
-
-  function randomNumber(min, max) {
-    return Math.random() * (max - min) + min;
-  }
 
   return <LineResponsive options={options} data={data} />;
 }
