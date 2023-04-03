@@ -1,21 +1,32 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { COLORS } from "../../assets/css/Colors";
+import scheduleApi from "../../services/scheduleApi";
+import { useQuery } from "react-query";
+import { colorsSituation } from "../../assets/css/colorsSituation";
+import ModalAppointment from "../../components/ModalAppointment";
+import UserContext from "../../contexts/UserContext";
 
 export default function Calendar() {
+  const [dates, setDates] = useState([]);
+  const [hours, setHours] = useState([]);
+  const { data, isLoading, isError } = useQuery("list-schedule", scheduleApi.getSchedule);
+  const [showModal, setShowModal] = useState(false);
+  const [appointment, setAppointment] = useState();
+  const { userData } = useContext(UserContext);
+
   useEffect(() => {
     const dates = getDatesUntilFriday();
     setDates(dates);
-    getHours(8, 16);
-  }, []);
+    getHours(Number(userData.user.Medic.startHour), Number(userData.user.Medic.endHour));
+  }, [userData]);
 
-  const [dates, setDates] = useState([]);
-  const [hours, setHours] = useState([]);
+  if (isLoading) return <h1>Carregando...</h1>;
 
   function getDatesUntilFriday() {
     const today = new Date();
     const dayOfWeek = today.getDay();
-    const offset = dayOfWeek > 1 ? dayOfWeek - 1 : 6;
+    const offset = (dayOfWeek + 6) % 7;
     const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - offset);
 
     const dates = [];
@@ -31,54 +42,92 @@ export default function Calendar() {
   function getHours(startHour, endHour) {
     const newHours = [...hours];
     for (let i = startHour; i <= endHour; i++) {
-      newHours.push(i);
+      const hour = `${i}`.padStart(2, "0") + ":00";
+      newHours.push(hour);
     }
     setHours(newHours);
   }
 
-  return (
-    <TableContent>
-      <thead>
-        <tr>
-          <th></th>
-          {dates.map((d) => (
-            <th className="headerDay">
-              <p className="weekday">{d.day}.</p>
-              <p className="day">{d.date.getDate()}</p>
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody id="calendar-body"></tbody>
+  function renderBox(appointments, hour) {
+    const arrayBox = [];
 
-      {hours.map((h) => {
-        return (
-          <tr>
-            <td>{h}:00</td>
-            <td className="width">
-              <Box situation={"confimed"}>
-                <p>(8:00 - 8:30)</p> <p>Kaley S. Brandt</p>
-              </Box>
-              <Box>
-                <p>(8:30 - 9:00)</p> <p>Kaley S. Brandt</p>
-              </Box>
-            </td>
-            <td className="width">
-              <Box situation={"canceled"}>
-                <p>(8:00 - 8:30)</p> <p>Kaley S. Brandt</p>
-              </Box>
-            </td>
-            <td className="width">
-              <Box situation={"to confirm"}>
-                <p>(8:30 - 9:00)</p> <p>Kaley S. Brandt</p>
-              </Box>
-            </td>
-            <td className="width">a</td>
-            <td className="width">a</td>
-          </tr>
+    for (const date in appointments) {
+      const MountBox = [];
+
+      for (const appointment of appointments[date]) {
+        const colorBox = colorsSituation[appointment.AppointmentStatus.status];
+
+        const date = new Date(appointment.date);
+        const end = new Date(date.getTime() + appointment.duration * 60000);
+        const startHour = date.getUTCHours().toString().padStart(2, "0") + ":" + date.getUTCMinutes().toString().padStart(2, "0");
+        const endHour = end.getUTCHours().toString().padStart(2, "0") + ":" + end.getUTCMinutes().toString().padStart(2, "0");
+
+        const Info = (
+          <Box
+            onClick={() => {
+              setAppointment(appointment);
+              setShowModal(true);
+            }}
+            situation={colorBox}
+          >
+            <p>
+              ({startHour} - {endHour})
+            </p>
+            <p>{appointment.Patient.name}</p>
+          </Box>
         );
-      })}
-    </TableContent>
+
+        MountBox.push(Info);
+      }
+
+      arrayBox.push(MountBox);
+    }
+
+    const spanTd = [];
+
+    for (let i = 0; i < 5 - arrayBox.length; i++) {
+      spanTd.push(<td className="width" />);
+    }
+
+    const mountedRow = (
+      <tr>
+        <th>{hour}</th>
+        {arrayBox.length ? (
+          arrayBox.map((a) => <td className="width">{a}</td>)
+        ) : (
+          <td className="width">
+            <span></span>
+          </td>
+        )}
+        {arrayBox.length < 5 && Array.from({ length: 5 - arrayBox.length }).map((_, i) => <td className="width" key={i}></td>)}
+      </tr>
+    );
+
+    return mountedRow;
+  }
+
+  return (
+    <>
+      <TableContent>
+        <thead>
+          <tr>
+            <th></th>
+            {dates.map((d) => (
+              <th className="headerDay">
+                <p className="weekday">{d.day}.</p>
+                <p className="day">{d.date.getDate()}</p>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {hours.map((h) => {
+            return renderBox(data[h], h);
+          })}
+        </tbody>
+      </TableContent>
+      <ModalAppointment show={showModal} setShow={setShowModal} isUpdate={true} appointment={appointment} />
+    </>
   );
 }
 
@@ -152,12 +201,13 @@ const Box = styled.div`
   height: 45px;
   margin: 5px;
 
+  cursor: pointer;
+
   border-radius: 8px;
 
   font-weight: bold;
   color: #ffffff;
   letter-spacing: 1px;
 
-  background-color: ${(props) =>
-    props.situation === "confimed" ? `${COLORS.MEDIUM_GREEN}` : props.situation === "canceled" ? `${COLORS.RED}` : `${COLORS.DARK_BLUE}`};
+  background-color: ${(props) => props.situation};
 `;
