@@ -4,56 +4,60 @@ import { COLORS } from "../../assets/css/Colors";
 import ModalAppointment from "../ModalAppointment";
 import BoxSituation from "./BoxSituation";
 
-function createData(schedule, name, situation) {
-  return { schedule, name, situation };
-}
-
-const rows = [
-  createData("8:00", "Kaley S. Brandt", "confirmed"),
-  createData("9:00", "Denise R. Guffey", "canceled"),
-  createData("10:00", "Denise R. Guffey", "not confirmed"),
-  createData("11:00", "Denise R. Guffey", "canceled"),
-  createData("12:00", "Denise R. Guffey", "not confirmed"),
-  createData("14:00", "Denise R. Guffey", "canceled"),
-];
-
-export default function Table() {
+export default function Table({ data }) {
   const [showModal, setShowModal] = useState(false);
-  const [patient, setPatient] = useState();
+  const [appointment, setAppointment] = useState();
+
+  function formatHour(dateString) {
+    const date = new Date(dateString);
+    const formattedMinutes = date.getUTCMinutes().toString().padStart(2, "0");
+    return `${date.getUTCHours()}:${formattedMinutes}`;
+  }
 
   return (
-    <TableContent>
-      <tbody>
-        <tr>
-          <th>Horário</th>
-          <th>Nome</th>
-          <th>Situação</th>
-        </tr>
-
-        {rows.map((patient, idx) => (
-          <tr
-            onClick={() => {
-              setShowModal(true);
-              setPatient(patient);
-            }}
-            key={idx}
-          >
-            <td>{patient.schedule}</td>
-            <td>{patient.name}</td>
-            <td>
-              <BoxSituation situation={patient.situation} />
-            </td>
+    <Container>
+      <TableContent>
+        <tbody>
+          <tr>
+            <th>Horário</th>
+            <th>Nome</th>
+            <th>Situação</th>
           </tr>
-        ))}
-      </tbody>
 
-      <ModalAppointment show={showModal} setShow={setShowModal} isUpdate={true} patient={patient} />
-    </TableContent>
+          {data?.map((appointment, idx) => (
+            <tr
+              onClick={() => {
+                setShowModal(true);
+                setAppointment(appointment);
+              }}
+              key={idx}
+            >
+              <td>{formatHour(appointment.date)}</td>
+              <td>{appointment.Patient.name}</td>
+              <td>
+                <BoxSituation situation={appointment.AppointmentStatus.status} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+
+        <ModalAppointment show={showModal} setShow={setShowModal} isUpdate={true} appointment={appointment} />
+      </TableContent>
+    </Container>
   );
 }
 
+const Container = styled.div`
+  max-height: 400px;
+  overflow: auto;
+`;
+
 const TableContent = styled.table`
   border-collapse: collapse;
+  width: 100%;
+
+  max-height: 400px;
+  overflow: auto;
 
   td,
   th {

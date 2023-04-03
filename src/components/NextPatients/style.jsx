@@ -40,6 +40,7 @@ const Subtitle = styled.div`
   width: 100%;
   border-bottom: 2px solid ${COLORS.GREY};
   padding: 10px 0px;
+  cursor: pointer;
 
   text-transform: uppercase;
   font-weight: bold;

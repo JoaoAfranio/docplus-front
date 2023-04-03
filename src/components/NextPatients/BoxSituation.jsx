@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { COLORS } from "../../assets/css/Colors";
+import { colorsSituation } from "../../assets/css/colorsSituation";
 
 export default function BoxSituation({ situation }) {
-  const colorBox = situation === "confirmed" ? `${COLORS.GREEN}` : situation === "canceled" ? `${COLORS.RED}` : `${COLORS.YELLOW}`;
-  const subtitle = situation === "confirmed" ? "confirmado" : situation === "canceled" ? "cancelado" : "confirmar";
+  const colorBox = colorsSituation[situation];
+  const subtitle = situation;
 
   return (
     <>
